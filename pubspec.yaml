@@ -1,0 +1,7 @@
+name: dsbroker
+version: 2.0.0
+dependencies:
+  dslink:
+    git:
+      url: https://github.com/IOT-DSA/sdk-dslink-dart.git
+      ref: protocol-v2
