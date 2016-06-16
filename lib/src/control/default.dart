@@ -101,4 +101,30 @@ class DefaultControlProvider extends ControlProvider {
 
     return new CompletedHandshake(link, response);
   }
+
+  @override
+  Future clearConns() async {
+    for (Link link in _linksByPath.values) {
+      if (!link.isConnected) {
+        _linksById.remove(link.dsId);
+        _linksByPath.remove(link.path);
+      }
+    }
+  }
+
+  @override
+  Stream<Link> getConnectedLinks() async* {
+    for (Link link in _linksById.values) {
+      if (link.isConnected) {
+        yield link;
+      }
+    }
+  }
+
+  @override
+  Stream<Link> getKnownLinks() async* {
+    for (Link link in _linksById.values) {
+      yield link;
+    }
+  }
 }

@@ -5,10 +5,14 @@ abstract class ControlProvider {
 
   Future<Link> getLinkByPath(String owner);
   Future<Link> getLinkByDsId(String dsId);
+  Future clearConns();
 
   Future authorize(Link link, String auth);
 
   Future<PrivateKey> getBrokerKey();
 
   void registerBroker(Broker broker);
+
+  Stream<Link> getKnownLinks();
+  Stream<Link> getConnectedLinks();
 }
