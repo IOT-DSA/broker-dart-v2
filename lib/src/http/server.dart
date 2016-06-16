@@ -14,6 +14,7 @@ class BrokerHttpServer {
   }
 
   Future useHttpServer(HttpServer server) async {
+    broker.logger.info("HTTP server listening on port ${server.port}");
     _server = server;
 
     server.listen(handleRequest);

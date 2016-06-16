@@ -3,12 +3,13 @@ part of dsa.broker;
 class Broker {
   final StorageProvider storage;
   final ControlProvider control;
+  final ConfigurationProvider config;
   final RouteProvider route;
   final Logger logger;
 
   BrokerHttpServer httpServer;
 
-  Broker(this.control, this.storage, this.route, this.logger);
+  Broker(this.control, this.config, this.storage, this.route, this.logger);
 
   Future<BrokerHttpServer> setupHttpServer({int port: 8080, host: "0.0.0.0"}) async {
     httpServer = new BrokerHttpServer(this);
