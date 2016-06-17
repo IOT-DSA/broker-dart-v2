@@ -15,6 +15,11 @@ class DefaultControlProvider extends ControlProvider {
   }
 
   @override
+  Future init() async {
+    await _loadConns();
+  }
+
+  @override
   Future authorize(Link link, String auth) async {
     if (!link.verifySalt(0, auth)) {
       throw new BrokerClientException(
@@ -77,6 +82,9 @@ class DefaultControlProvider extends ControlProvider {
       path: connPath
     );
 
+    link.isRequester = request.isRequester;
+    link.isResponder = request.isRequester;
+
     _linksById[link.dsId] = link;
     _linksByPath[link.path] = link;
 
@@ -97,7 +105,9 @@ class DefaultControlProvider extends ControlProvider {
       path: link.path
     );
 
-    _broker.logger.info("DSLink Shaken for ${connPath}");
+    _broker.logger.info("DSLink shaken for ${connPath}");
+
+    await _saveConns();
 
     return new CompletedHandshake(link, response);
   }
@@ -110,6 +120,8 @@ class DefaultControlProvider extends ControlProvider {
         _linksByPath.remove(link.path);
       }
     }
+
+    await _saveConns();
   }
 
   @override
@@ -126,5 +138,39 @@ class DefaultControlProvider extends ControlProvider {
     for (Link link in _linksById.values) {
       yield link;
     }
+  }
+
+  Future _loadConns() async {
+    var conns = await _broker.storage.retrieve("conns");
+
+    if (conns is Map) {
+      for (var key in conns.keys) {
+        var map = conns[key];
+
+        if (map["dsId"] is String && map["path"] is String) {
+          String id = map["dsId"];
+          String path = map["path"];
+
+          _linksById[map["dsId"]] = new Link(
+            _broker,
+            dsId: id,
+            path: path
+          );
+        }
+      }
+    }
+  }
+
+  Future _saveConns() async {
+    var out = <String, Map<String, dynamic>>{};
+
+    for (Link link in _linksById.values) {
+      out[link.dsId] = <String, dynamic>{
+        "dsId": link.dsId,
+        "path": link.path
+      };
+    }
+
+    await _broker.storage.store("conns", out);
   }
 }

@@ -4,8 +4,9 @@ class Link {
   final Broker broker;
   final String dsId;
   final String path;
-  final bool isRequester;
-  final bool isResponder;
+
+  bool isRequester = false;
+  bool isResponder = true;
 
   ConnectionProvider _connection;
 
@@ -41,8 +42,8 @@ class Link {
   Link(this.broker, {
     this.dsId,
     this.path,
-    this.isRequester,
-    this.isResponder
+    this.isRequester: false,
+    this.isResponder: true
   }) {
     for (int i = 0; i < 3; ++i) {
       List<int> bytes = new List<int>(12);

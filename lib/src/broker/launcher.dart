@@ -88,7 +88,7 @@ class BrokerLauncher {
       logger
     );
 
-    broker.init();
+    await broker.init();
     await broker.setupHttpServer(
       host: await config.getString("http.host"),
       port: await config.getInteger("http.port")

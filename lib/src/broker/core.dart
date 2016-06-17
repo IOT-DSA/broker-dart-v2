@@ -17,8 +17,12 @@ class Broker {
     return httpServer;
   }
 
-  void init() {
+  Future init() async {
     control.registerBroker(this);
     route.registerBroker(this);
+
+    await storage.init();
+    await control.init();
+    await route.init();
   }
 }

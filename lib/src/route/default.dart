@@ -1,11 +1,5 @@
 part of dsa.broker;
 
-abstract class RouteProvider {
-  void registerBroker(Broker broker);
-
-  Future handle(Link link, List<DSPacket> packets);
-}
-
 class DefaultRouteProvider extends RouteProvider {
   static const List<String> linkPoints = const <String>[
     "/downstream/",
@@ -14,6 +8,15 @@ class DefaultRouteProvider extends RouteProvider {
   ];
 
   Broker _broker;
+
+  @override
+  void registerBroker(Broker broker) {
+    _broker = broker;
+  }
+
+  @override
+  Future init() async {
+  }
 
   @override
   handle(Link sourceLink, List<DSPacket> packets) async {
@@ -92,11 +95,6 @@ class DefaultRouteProvider extends RouteProvider {
     }
   }
 
-  @override
-  void registerBroker(Broker broker) {
-    _broker = broker;
-  }
-
   RouteDescription describe(String path) {
     for (String point in linkPoints) {
       if (path.startsWith(point)) {
@@ -109,11 +107,4 @@ class DefaultRouteProvider extends RouteProvider {
 
     return new RouteDescription("/", path);
   }
-}
-
-class RouteDescription {
-  final String owner;
-  final String target;
-
-  RouteDescription(this.owner, this.target);
 }

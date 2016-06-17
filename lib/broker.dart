@@ -31,8 +31,11 @@ part "src/broker/launcher.dart";
 part "src/broker/exception.dart";
 part "src/broker/connection.dart";
 part "src/broker/link.dart";
-part "src/broker/route.dart";
 part "src/broker/translator.dart";
+
+part "src/route/provider.dart";
+part "src/route/default.dart";
+part "src/route/description.dart";
 
 part "src/handshake/request.dart";
 part "src/handshake/response.dart";
