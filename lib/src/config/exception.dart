@@ -12,7 +12,7 @@ class ConfigurationException {
     var out = "${message}";
 
     if (key != null || value != null) {
-      out += "(";
+      out += " (";
       if (key != null) {
         out += "Key: ${key}";
       }

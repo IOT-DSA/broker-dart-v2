@@ -14,13 +14,13 @@ class JsonFileConfigurationProvider extends BaseConfigurationProvider {
   @override
   Future init(ConfigurationProvision provision) async {
     writeDefaults() async {
-      var out = <String, dynamic>{};
+      _json = <String, dynamic>{};
 
       for (ConfigurationEntryProvision entry in provision.entries) {
-        out[entry.key] = entry.defaultValue;
+        _putData(entry.key, entry.defaultValue);
       }
 
-      var encoded = const JsonEncoder.withIndent("  ").convert(out) + "\n";
+      var encoded = const JsonEncoder.withIndent("  ").convert(_json) + "\n";
 
       if (!(await file.parent.exists())) {
         await file.parent.create(recursive: true);
@@ -47,22 +47,98 @@ class JsonFileConfigurationProvider extends BaseConfigurationProvider {
     }
   }
 
+  dynamic _resolveData(String path) {
+    var parts = path.split(".");
+    var m = _json;
+
+    if (m.containsKey(path)) {
+      return m[path];
+    }
+
+    for (String part in parts) {
+      if (m == null) {
+        return null;
+      }
+
+      if (m is Map) {
+        m = m[part];
+      } else {
+        m = null;
+      }
+    }
+
+    return m;
+  }
+
+  bool _resolveHasData(String path) {
+    var parts = path.split(".");
+    var m = _json;
+
+    if (m.containsKey(path)) {
+      return true;
+    }
+
+    var name = parts.removeLast();
+    for (String part in parts) {
+      if (m == null) {
+        return null;
+      }
+
+      if (m is Map) {
+        m = m[part];
+      } else {
+        m = null;
+      }
+    }
+
+    if (m is Map && m.containsKey(name)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  void _putData(String path, dynamic value) {
+    var parts = path.split(".");
+    var keyName = parts.removeLast();
+    var m = _json;
+
+    if (m.containsKey(path)) {
+      m[path] = value;
+      return;
+    }
+
+    for (String part in parts) {
+      if (m[part] == null) {
+        m[part] = {};
+      } else if (m[part] is! Map) {
+        m[part] = {
+          "_": m[part]
+        };
+      }
+
+      m = m[part];
+    }
+
+    m[keyName] = value;
+  }
+
   Future _save() async {
     var encoded = const JsonEncoder.withIndent("  ").convert(_json) + "\n";
     await file.writeAsString(encoded);
   }
 
   @override
-  Future<dynamic> get(String key) async => _json[key];
+  Future<dynamic> get(String key) async => _resolveData(key);
 
   @override
   Future<bool> has(String key) async {
-    return _json.containsKey(key);
+    return _resolveHasData(key);
   }
 
   @override
   Future set(String key, value) async {
-    _json[key] = value;
+    _putData(key, value);
     await _save();
   }
 }
