@@ -17,4 +17,6 @@ abstract class ControlProvider {
 
   Stream<Link> getKnownLinks();
   Stream<Link> getConnectedLinks();
+
+  Future stop();
 }

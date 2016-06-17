@@ -42,5 +42,11 @@ final List<ConfigurationEntryProvision> _globalConfigurationSettings = [
     ConfigurationEntryType.string,
     defaultValue: "INFO",
     allowedValues: Level.LEVELS.map((l) => l.name).toList()
+  ),
+  new ConfigurationEntryProvision(
+    "task_loop.interval",
+    ConfigurationEntryType.integer,
+    defaultValue: 1000,
+    min: 1
   )
 ];

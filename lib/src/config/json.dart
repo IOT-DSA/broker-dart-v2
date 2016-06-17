@@ -3,6 +3,8 @@ part of dsa.broker;
 class JsonFileConfigurationProvider extends BaseConfigurationProvider {
   final File file;
 
+  TaskRunLoop _loop = new TaskRunLoop(const Duration(seconds: 2));
+
   Map<String, dynamic> _json = <String, dynamic>{};
 
   JsonFileConfigurationProvider(this.file);
@@ -13,6 +15,10 @@ class JsonFileConfigurationProvider extends BaseConfigurationProvider {
 
   @override
   Future init(ConfigurationProvision provision) async {
+    _loop.register("save", _save);
+
+    await _loop.start();
+
     writeDefaults() async {
       _json = <String, dynamic>{};
 
@@ -45,6 +51,14 @@ class JsonFileConfigurationProvider extends BaseConfigurationProvider {
       await file.copy(pathlib.basename(file.path) + ".corrupt");
       await writeDefaults();
     }
+
+    for (ConfigurationEntryProvision entry in provision.entries) {
+      if (!(await has(entry.key))) {
+        _putData(entry.key, entry.defaultValue);
+      }
+    }
+
+    await _save();
   }
 
   dynamic _resolveData(String path) {
@@ -81,7 +95,7 @@ class JsonFileConfigurationProvider extends BaseConfigurationProvider {
     var name = parts.removeLast();
     for (String part in parts) {
       if (m == null) {
-        return null;
+        return false;
       }
 
       if (m is Map) {
@@ -123,11 +137,6 @@ class JsonFileConfigurationProvider extends BaseConfigurationProvider {
     m[keyName] = value;
   }
 
-  Future _save() async {
-    var encoded = const JsonEncoder.withIndent("  ").convert(_json) + "\n";
-    await file.writeAsString(encoded);
-  }
-
   @override
   Future<dynamic> get(String key) async => _resolveData(key);
 
@@ -139,6 +148,17 @@ class JsonFileConfigurationProvider extends BaseConfigurationProvider {
   @override
   Future set(String key, value) async {
     _putData(key, value);
+    await _loop.schedule("save");
+  }
+
+  @override
+  Future close() async {
+    await _loop.stop();
     await _save();
+  }
+
+  Future _save() async {
+    var encoded = const JsonEncoder.withIndent("  ").convert(_json) + "\n";
+    await file.writeAsString(encoded);
   }
 }

@@ -16,6 +16,8 @@ abstract class ConfigurationProvider {
   Future setString(String key, String value);
   Future setMap(String key, Map<String, dynamic> value);
   Future setStringList(String key, List<String> value);
+
+  Future close();
 }
 
 abstract class BaseConfigurationProvider extends ConfigurationProvider {

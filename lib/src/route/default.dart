@@ -107,4 +107,8 @@ class DefaultRouteProvider extends RouteProvider {
 
     return new RouteDescription("/", path);
   }
+
+  @override
+  Future stop() async {
+  }
 }

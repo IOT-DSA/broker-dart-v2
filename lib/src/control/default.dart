@@ -173,4 +173,14 @@ class DefaultControlProvider extends ControlProvider {
 
     await _broker.storage.store("conns", out);
   }
+
+  @override
+  Future stop() async {
+    for (Link link in _linksById.values) {
+      link.kick();
+    }
+
+    _linksById.clear();
+    _linksByPath.clear();
+  }
 }

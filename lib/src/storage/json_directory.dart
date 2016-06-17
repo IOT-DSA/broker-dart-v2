@@ -43,4 +43,8 @@ class JsonDirectoryStorageProvider extends StorageProvider {
       await file.delete();
     }
   }
+
+  @override
+  Future stop() async {
+  }
 }

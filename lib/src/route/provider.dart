@@ -5,4 +5,6 @@ abstract class RouteProvider {
   Future init();
 
   Future handle(Link link, List<DSPacket> packets);
+
+  Future stop();
 }

@@ -79,13 +79,15 @@ class BrokerLauncher {
     var storage = await createStorageProvider(config);
     var route = await createRouteProvider(config);
     var logger = await createLogger(config);
+    var taskLoop = await createTaskLoop(config);
 
     var broker = new Broker(
       control,
       config,
       storage,
       route,
-      logger
+      logger,
+      taskLoop
     );
 
     await broker.init();
@@ -94,6 +96,13 @@ class BrokerLauncher {
       port: await config.getInteger("http.port")
     );
     return broker;
+  }
+
+  Future<TaskRunLoop> createTaskLoop(ConfigurationProvider config) async {
+    var milliseconds = await config.getInteger("task_loop.interval");
+    var interval = new Duration(milliseconds: milliseconds);
+
+    return new TaskRunLoop(interval);
   }
 
   Future<ControlProvider> createControlProvider(ConfigurationProvider config) async {
