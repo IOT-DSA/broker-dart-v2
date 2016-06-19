@@ -12,6 +12,19 @@ class DefaultControlProvider extends ControlProvider {
   @override
   void registerBroker(Broker broker) {
     _broker = broker;
+
+    _broker.taskLoop.register("save.conns", () async {
+      var out = <String, Map<String, dynamic>>{};
+
+      for (Link link in _linksById.values) {
+        out[link.dsId] = <String, dynamic>{
+          "dsId": link.dsId,
+          "path": link.path
+        };
+      }
+
+      await _broker.storage.store("conns", out);
+    });
   }
 
   @override
@@ -107,7 +120,7 @@ class DefaultControlProvider extends ControlProvider {
 
     _broker.logger.info("DSLink shaken for ${connPath}");
 
-    await _saveConns();
+    _broker.taskLoop.schedule("save.conns");
 
     return new CompletedHandshake(link, response);
   }
@@ -121,7 +134,7 @@ class DefaultControlProvider extends ControlProvider {
       }
     }
 
-    await _saveConns();
+    _broker.taskLoop.schedule("save.conns");
   }
 
   @override
@@ -161,19 +174,6 @@ class DefaultControlProvider extends ControlProvider {
     }
   }
 
-  Future _saveConns() async {
-    var out = <String, Map<String, dynamic>>{};
-
-    for (Link link in _linksById.values) {
-      out[link.dsId] = <String, dynamic>{
-        "dsId": link.dsId,
-        "path": link.path
-      };
-    }
-
-    await _broker.storage.store("conns", out);
-  }
-
   @override
   Future stop() async {
     for (Link link in _linksById.values) {
@@ -182,5 +182,6 @@ class DefaultControlProvider extends ControlProvider {
 
     _linksById.clear();
     _linksByPath.clear();
+    _broker.taskLoop.unregister("save.conns");
   }
 }
