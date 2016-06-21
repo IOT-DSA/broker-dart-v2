@@ -1,6 +1,6 @@
 part of dsa.broker;
 
-class Link {
+class DSLink {
   final Broker broker;
   final String dsId;
   final String path;
@@ -39,7 +39,7 @@ class Link {
     kick();
   }
 
-  Link(this.broker, {
+  DSLink(this.broker, {
     this.dsId,
     this.path,
     this.isRequester: false,
@@ -58,7 +58,7 @@ class Link {
   ConnectionProvider get connection => _connection;
   bool get isConnected => _connection != null;
 
-  TranslationHandler translator;
+  TranslationHandler translator = new TranslationHandler();
 
   ECDH verifiedNonce;
   ECDH tempNonce;

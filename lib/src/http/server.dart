@@ -32,6 +32,8 @@ class BrokerHttpServer {
     try {
       var uri = request.uri;
 
+      request.response.headers.set("Access-Control-Allow-Origin", "*");
+
       if (uri.path == "/conn") {
         await handleConnRequest(request);
       } else if (uri.path == "/ws") {

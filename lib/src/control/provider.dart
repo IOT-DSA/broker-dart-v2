@@ -7,16 +7,19 @@ abstract class ControlProvider {
 
   Future<CompletedHandshake> shake(HandshakeRequest request);
 
-  Future<Link> getLinkByPath(String owner);
-  Future<Link> getLinkByDsId(String dsId);
+  Future<DSLink> getLinkByPath(String owner);
+  Future<DSLink> getLinkByDsId(String dsId);
   Future clearConns();
 
-  Future authorize(Link link, String auth);
+  Future authorize(DSLink link, String auth);
 
   Future<PrivateKey> getBrokerKey();
 
-  Stream<Link> getKnownLinks();
-  Stream<Link> getConnectedLinks();
+  Stream<DSLink> getKnownLinks();
+  Stream<DSLink> getConnectedLinks();
 
   Future stop();
+
+  void addEventListener(BrokerEventListener listener);
+  void registerBrokerLink(BrokerLink brokerLink);
 }

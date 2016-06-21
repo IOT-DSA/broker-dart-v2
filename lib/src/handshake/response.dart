@@ -1,7 +1,7 @@
 part of dsa.broker;
 
 class CompletedHandshake {
-  final Link link;
+  final DSLink link;
   final HandshakeResponse response;
 
   CompletedHandshake(this.link, this.response);
@@ -18,7 +18,7 @@ class HandshakeResponse {
   final String path;
   final String version;
 
-  final Link link;
+  final DSLink link;
 
   HandshakeResponse({
     this.dsId,

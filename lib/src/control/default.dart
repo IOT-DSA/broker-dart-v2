@@ -6,8 +6,8 @@ class DefaultControlProvider extends ControlProvider {
   Broker _broker;
   PrivateKey _key;
 
-  Map<String, Link> _linksByPath = <String, Link>{};
-  Map<String, Link> _linksById = <String, Link>{};
+  Map<String, DSLink> _linksByPath = <String, DSLink>{};
+  Map<String, DSLink> _linksById = <String, DSLink>{};
 
   @override
   void registerBroker(Broker broker) {
@@ -16,11 +16,15 @@ class DefaultControlProvider extends ControlProvider {
     _broker.taskLoop.register("save.conns", () async {
       var out = <String, Map<String, dynamic>>{};
 
-      for (Link link in _linksById.values) {
+      for (DSLink link in _linksById.values) {
         out[link.dsId] = <String, dynamic>{
           "dsId": link.dsId,
           "path": link.path
         };
+
+        for (BrokerEventListener listener in _listeners) {
+          listener.handleNewLink(link);
+        }
       }
 
       await _broker.storage.store("conns", out);
@@ -33,7 +37,7 @@ class DefaultControlProvider extends ControlProvider {
   }
 
   @override
-  Future authorize(Link link, String auth) async {
+  Future authorize(DSLink link, String auth) async {
     if (!link.verifySalt(0, auth)) {
       throw new BrokerClientException(
         "Failed to authorize link: Invalid auth."
@@ -50,18 +54,19 @@ class DefaultControlProvider extends ControlProvider {
   }
 
   @override
-  Future<Link> getLinkByDsId(String dsId) async {
+  Future<DSLink> getLinkByDsId(String dsId) async {
     return _linksById[dsId];
   }
 
   @override
-  Future<Link> getLinkByPath(String owner) async {
+  Future<DSLink> getLinkByPath(String owner) async {
     return _linksByPath[owner];
   }
 
   @override
   Future<CompletedHandshake> shake(HandshakeRequest request) async {
-    Link previousLink = _linksById[request.dsId];
+    DSLink previousLink = _linksById[request.dsId];
+
     ECDH lastNonce = previousLink != null ? previousLink.verifiedNonce : null;
 
     Uint8List publicKeyBytes = Base64.decode(request.publicKey);
@@ -89,7 +94,7 @@ class DefaultControlProvider extends ControlProvider {
       }
     }
 
-    Link link = previousLink != null ? previousLink : new Link(
+    DSLink link = previousLink != null ? previousLink : new DSLink(
       _broker,
       dsId: request.dsId,
       path: connPath
@@ -122,12 +127,18 @@ class DefaultControlProvider extends ControlProvider {
 
     _broker.taskLoop.schedule("save.conns");
 
+    if (previousLink != link) {
+      for (BrokerEventListener listener in _listeners) {
+        listener.handleNewLink(link);
+      }
+    }
+
     return new CompletedHandshake(link, response);
   }
 
   @override
   Future clearConns() async {
-    for (Link link in _linksByPath.values) {
+    for (DSLink link in _linksByPath.values) {
       if (!link.isConnected) {
         _linksById.remove(link.dsId);
         _linksByPath.remove(link.path);
@@ -138,8 +149,8 @@ class DefaultControlProvider extends ControlProvider {
   }
 
   @override
-  Stream<Link> getConnectedLinks() async* {
-    for (Link link in _linksById.values) {
+  Stream<DSLink> getConnectedLinks() async* {
+    for (DSLink link in _linksById.values) {
       if (link.isConnected) {
         yield link;
       }
@@ -147,8 +158,8 @@ class DefaultControlProvider extends ControlProvider {
   }
 
   @override
-  Stream<Link> getKnownLinks() async* {
-    for (Link link in _linksById.values) {
+  Stream<DSLink> getKnownLinks() async* {
+    for (DSLink link in _linksById.values) {
       yield link;
     }
   }
@@ -164,7 +175,7 @@ class DefaultControlProvider extends ControlProvider {
           String id = map["dsId"];
           String path = map["path"];
 
-          _linksById[map["dsId"]] = new Link(
+          _linksById[map["dsId"]] = new DSLink(
             _broker,
             dsId: id,
             path: path
@@ -176,12 +187,25 @@ class DefaultControlProvider extends ControlProvider {
 
   @override
   Future stop() async {
-    for (Link link in _linksById.values) {
+    for (DSLink link in _linksById.values) {
       link.kick();
     }
 
     _linksById.clear();
     _linksByPath.clear();
     _broker.taskLoop.unregister("save.conns");
+  }
+
+  @override
+  void addEventListener(BrokerEventListener listener) {
+    _listeners.add(listener);
+  }
+
+  List<BrokerEventListener> _listeners = <BrokerEventListener>[];
+
+  @override
+  void registerBrokerLink(BrokerLink brokerLink) {
+    _linksByPath["/"] = brokerLink;
+    _linksById[brokerLink.dsId] = brokerLink;
   }
 }

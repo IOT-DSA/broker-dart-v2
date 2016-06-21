@@ -9,6 +9,7 @@ class Broker {
   final TaskRunLoop taskLoop;
 
   BrokerHttpServer httpServer;
+  BrokerLink brokerLink;
 
   Broker(
     this.control,
@@ -34,6 +35,10 @@ class Broker {
     await storage.init();
     await control.init();
     await route.init();
+
+    var key = await control.getBrokerKey();
+    brokerLink = new BrokerLink(this, key.publicKey.getDsId("broker-dsa-"));
+    control.registerBrokerLink(brokerLink);
   }
 
   Future stop() async {

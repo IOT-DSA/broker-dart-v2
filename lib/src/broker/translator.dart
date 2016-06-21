@@ -7,6 +7,7 @@ class TranslationHandler {
 
   int _requestNext = 0;
   int _respondNext = 0;
+  int _nextAckId = 0;
 
   int translateRequest(int rid, [String dsId]) {
     int out = _requestTable[rid];
@@ -68,5 +69,9 @@ class TranslationHandler {
     int r = _requestTable.remove(rid);
     _responseTable.remove(r);
     _dsIdTable.remove(r);
+  }
+
+  int getNextAckId() {
+    return _nextAckId++;
   }
 }

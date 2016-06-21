@@ -3,19 +3,20 @@ part of dsa.broker;
 class WebSocketProvider extends ConnectionProvider {
   final WebSocket socket;
 
-  Link _link;
+  DSLink _link;
 
   WebSocketProvider(this.socket);
 
   @override
-  void registerLink(Link link) {
+  void registerLink(DSLink link) {
     _link = link;
 
     var reader = new DSPacketReader();
 
     socket.listen((data) {
       if (data is Uint8List && data.lengthInBytes != 0) {
-        _link.handlePackets(reader.read(data));
+        var pkts = reader.read(data);
+        _link.handlePackets(pkts);
       }
     });
 

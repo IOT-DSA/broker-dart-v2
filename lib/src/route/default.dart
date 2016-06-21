@@ -19,10 +19,14 @@ class DefaultRouteProvider extends RouteProvider {
   }
 
   @override
-  handle(Link sourceLink, List<DSPacket> packets) async {
-    var deliverQueue = <Link, List<DSPacket>>{};
+  handle(DSLink sourceLink, List<DSPacket> packets) async {
+    var deliverQueue = <DSLink, List<DSPacket>>{};
+    var msgs = <DSMsgPacket>[];
+    var acks = <DSAckPacket>[];
 
-    pub(Link link, DSPacket pkt) {
+    pub(DSLink link, DSPacket pkt) {
+      print("${pkt} => ${link.dsId}");
+
       if (sourceLink != link) {
         if (pkt is DSRequestPacket) {
           pkt.rid = link.translator.translateRequest(pkt.rid, sourceLink.dsId);
@@ -42,11 +46,9 @@ class DefaultRouteProvider extends RouteProvider {
 
     for (DSPacket packet in packets) {
       if (packet is DSMsgPacket) {
-        var ack = new DSAckPacket();
-        ack.ackId = packet.ackId;
-
-        pub(sourceLink, ack);
+        msgs.add(packet);
       } else if (packet is DSAckPacket) {
+        acks.add(packet);
       } else if (packet is DSRequestPacket && sourceLink.isRequester) {
         var path = packet.path;
         var route = describe(path);
@@ -66,8 +68,9 @@ class DefaultRouteProvider extends RouteProvider {
           pub(link, packet);
         }
       } else if (packet is DSResponsePacket && sourceLink.isResponder) {
+        var targetDsId = sourceLink.translator.translateResponseRoute(packet.rid);
         var link = await _broker.control.getLinkByDsId(
-          sourceLink.translator.translateResponseRoute(packet.rid)
+          targetDsId
         );
 
         if (link == null) {
@@ -84,11 +87,15 @@ class DefaultRouteProvider extends RouteProvider {
       }
     }
 
+    for (DSMsgPacket pkt in msgs) {
+
+    }
+
     if (_broker.logger.isLoggable(Level.FINEST)) {
       _broker.logger.finest("Deliver: ${deliverQueue}");
     }
 
-    for (Link link in deliverQueue.keys) {
+    for (DSLink link in deliverQueue.keys) {
       if (link.isConnected) {
         link.connection.send(deliverQueue[link]);
       }
@@ -110,5 +117,33 @@ class DefaultRouteProvider extends RouteProvider {
 
   @override
   Future stop() async {
+  }
+}
+
+class _RouteAckGroup {
+  final DefaultRouteProvider route;
+  final Map<DSLink, int> acks;
+  final DSLink target;
+  final int sendAckId;
+
+  int _got = 0;
+
+  _RouteAckGroup(this.route, this.acks, this.target, this.sendAckId);
+
+  void recv(DSLink link, int ackId) {
+    var expect = acks[link];
+    if (expect == ackId) {
+      _got++;
+    }
+
+    if (_got == acks.length) {
+      if (target.isConnected) {
+        var ack = new DSAckPacket();
+        ack.ackId = sendAckId;
+        target.connection.send([
+          ack
+        ]);
+      }
+    }
   }
 }

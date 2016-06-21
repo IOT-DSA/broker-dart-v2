@@ -4,7 +4,7 @@ abstract class RouteProvider {
   void registerBroker(Broker broker);
   Future init();
 
-  Future handle(Link link, List<DSPacket> packets);
+  Future handle(DSLink link, List<DSPacket> packets);
 
   Future stop();
 }
