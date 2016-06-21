@@ -3,7 +3,8 @@ part of dsa.broker;
 class TranslationHandler {
   Map<int, int> _requestTable = <int, int>{};
   Map<int, int> _responseTable = <int, int>{};
-  Map<int, String> _dsIdTable = <int, String>{};
+  Map<int, String> _requesterDsIdTable = <int, String>{};
+  Map<int, String> _responderDsIdTable = <int, String>{};
 
   int _requestNext = 0;
   int _respondNext = 0;
@@ -21,17 +22,21 @@ class TranslationHandler {
     }
 
     if (dsId != null) {
-      _dsIdTable[out] = dsId;
+      _responderDsIdTable[out] = dsId;
     }
 
     return out;
   }
 
-  int translateResponse(int rid) {
+  int translateResponse(int rid, [String dsId]) {
     int out = _responseTable[rid];
 
     if (out == null) {
       out = _incrementResponse();
+    }
+
+    if (dsId != null) {
+      _requesterDsIdTable[out] = dsId;
     }
 
     return out;
@@ -62,16 +67,37 @@ class TranslationHandler {
   }
 
   String translateResponseRoute(int rid) {
-    return _dsIdTable[rid];
+    return _responderDsIdTable[rid];
+  }
+
+  String translateRequestRoute(int rid) {
+    return _responderDsIdTable[rid];
   }
 
   void close(int rid) {
     int r = _requestTable.remove(rid);
     _responseTable.remove(r);
-    _dsIdTable.remove(r);
+    _responderDsIdTable.remove(r);
+  }
+
+  List<DsIdAndRid> getTargetResponsesToClose() {
+    var out = [];
+    for (int key in _responseTable.keys) {
+      int val = _responseTable[key];
+
+      out.add(new DsIdAndRid(translateRequestRoute(val), val));
+    }
+    return out;
   }
 
   int getNextAckId() {
     return _nextAckId++;
   }
+}
+
+class DsIdAndRid {
+  final String dsId;
+  final int rid;
+
+  DsIdAndRid(this.dsId, this.rid);
 }

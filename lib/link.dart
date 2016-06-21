@@ -5,6 +5,8 @@ import "dart:async";
 import "package:dslink/dslink.dart";
 import "package:dsbroker/broker.dart";
 
+import "package:dslink/utils.dart" as DSUtils;
+
 part "src/link/root.dart";
 part "src/link/downstream.dart";
 part "src/link/virtual_conn.dart";

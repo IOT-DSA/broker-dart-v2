@@ -8,6 +8,7 @@ class DefaultRouteProvider extends RouteProvider {
   ];
 
   Broker _broker;
+  List<_RouteAckGroup> _ackGroups = [];
 
   @override
   void registerBroker(Broker broker) {
@@ -25,7 +26,7 @@ class DefaultRouteProvider extends RouteProvider {
     var acks = <DSAckPacket>[];
 
     pub(DSLink link, DSPacket pkt) {
-      print("${pkt} => ${link.dsId}");
+      print("${sourceLink.dsId} => ${pkt} => ${link.dsId}");
 
       if (sourceLink != link) {
         if (pkt is DSRequestPacket) {
@@ -68,7 +69,10 @@ class DefaultRouteProvider extends RouteProvider {
           pub(link, packet);
         }
       } else if (packet is DSResponsePacket && sourceLink.isResponder) {
-        var targetDsId = sourceLink.translator.translateResponseRoute(packet.rid);
+        var targetDsId = sourceLink.translator.translateResponseRoute(
+          packet.rid
+        );
+
         var link = await _broker.control.getLinkByDsId(
           targetDsId
         );
@@ -88,7 +92,17 @@ class DefaultRouteProvider extends RouteProvider {
     }
 
     for (DSMsgPacket pkt in msgs) {
+      var out = <DSLink, int>{};
+      for (DSLink link in deliverQueue.keys) {
+        out[link] = link.translator.getNextAckId();
+      }
+      _ackGroups.add(new _RouteAckGroup(this, out, sourceLink, pkt.ackId));
+    }
 
+    for (DSAckPacket pkt in acks) {
+      for (_RouteAckGroup group in _ackGroups.toList()) {
+        group.recv(sourceLink, pkt.ackId);
+      }
     }
 
     if (_broker.logger.isLoggable(Level.FINEST)) {
@@ -143,7 +157,10 @@ class _RouteAckGroup {
         target.connection.send([
           ack
         ]);
+        print("ACK ${ack.ackId}");
       }
+
+      route._ackGroups.remove(this);
     }
   }
 }

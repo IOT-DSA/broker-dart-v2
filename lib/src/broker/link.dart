@@ -76,8 +76,18 @@ class DSLink {
 
     _connection = conn;
     conn.registerLink(this);
-    conn.onDisconnect.then((_) {
+    conn.onDisconnect.then((_) async {
       _connection = null;
+
+      var closes = translator.getTargetResponsesToClose();
+
+      for (DsIdAndRid pair in closes) {
+        var link = await broker.control.getLinkByDsId(pair.dsId);
+
+        if (link != null) {
+          // TODO: Close.
+        }
+      }
     });
   }
 
