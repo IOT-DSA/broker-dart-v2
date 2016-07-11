@@ -6,3 +6,5 @@ dependencies:
       url: https://github.com/IOT-DSA/sdk-dslink-dart.git
       ref: protocol-v2
   path: "^1.3.9"
+dev_dependencies:
+  test: "^0.12.15"
