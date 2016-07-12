@@ -17,6 +17,8 @@ import "package:path/path.dart" as pathlib;
 
 import "package:logging/logging.dart";
 
+import 'responder.dart';
+
 part "src/control/provider.dart";
 part "src/control/default.dart";
 
@@ -45,3 +47,8 @@ part "src/http/websocket.dart";
 
 part "src/storage/provider.dart";
 part "src/storage/json_directory.dart";
+
+part "src/dslink/base_dslink.dart";
+part "src/dslink/ecdh_dslink.dart";
+part "src/dslink/user_dslink.dart";
+part "src/dslink/connection.dart";
