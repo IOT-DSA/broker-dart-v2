@@ -33,23 +33,24 @@ class RespNode {
     // TODO
   }
 
-  BaseHandler setValue(Object value, IRemoteRequester link) {
+  SetValueHandler setValue(Object value, IRemoteRequester link) {
     // TODO
   }
 
-  BaseHandler setConfig(String key, Object value, IRemoteRequester link) {
+  SetConfigHandler setConfig(String key, Object value, IRemoteRequester link) {
     // TODO
   }
 
-  BaseHandler setAttribute(String key, Object value, IRemoteRequester link) {
+  SetAttributeHandler setAttribute(String key, Object value,
+      IRemoteRequester link) {
     // TODO
   }
 
-  BaseHandler removeConfig(String key, IRemoteRequester link) {
+  RemoveConfigHandler removeConfig(String key, IRemoteRequester link) {
     // TODO
   }
 
-  BaseHandler removeAttribute(String key, IRemoteRequester link) {
+  RemoveAttributeHandler removeAttribute(String key, IRemoteRequester link) {
     // TODO
   }
 }

@@ -52,3 +52,11 @@ part "src/dslink/base_dslink.dart";
 part "src/dslink/ecdh_dslink.dart";
 part "src/dslink/user_dslink.dart";
 part "src/dslink/connection.dart";
+
+part "src/initiator/initiator.dart";
+part "src/initiator/subscribe_initiator.dart";
+part "src/initiator/list_initiator.dart";
+part "src/initiator/invoke_initiator.dart";
+part "src/initiator/set_value_initiator.dart";
+part "src/initiator/set_config_initiator.dart";
+part "src/initiator/remove_config_initiator.dart";

@@ -1,4 +1,4 @@
 part of dsa.responder;
 
-class InvokeHandler extends BaseHandler {
+class InvokeHandler extends Handler {
 }

@@ -2,6 +2,8 @@ part of dsa.responder;
 
 class RespProvider {
 
+  IRespImplProvider _implProvider;
+
   Map<String, RespNode> _nodes = {};
 
   /// node should already be automatically created
@@ -13,6 +15,9 @@ class RespProvider {
     }
     node = new RespNode(this, path);
     _nodes[path] = node;
+    if (_implProvider != null) {
+      node.attachImpl(_implProvider.getImpl(path));
+    }
     return node;
   }
 }

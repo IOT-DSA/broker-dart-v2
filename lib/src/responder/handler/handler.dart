@@ -1,4 +1,4 @@
 part of dsa.responder;
 
-class BaseHandler {
+class Handler {
 }

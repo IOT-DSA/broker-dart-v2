@@ -1,4 +1,4 @@
 part of dsa.responder;
 
-class ListHandler extends BaseHandler {
+class ListHandler extends Handler {
 }
