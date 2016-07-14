@@ -1,4 +1,4 @@
-part of dsa.broker.utils;
+part of dsa.common;
 
 abstract class IDestroyable {
   void destroy();

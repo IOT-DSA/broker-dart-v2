@@ -1,4 +1,4 @@
-part of dsa.responder;
+part of dsa.common;
 
 abstract class IRemoteRequester {
   String get dsId;

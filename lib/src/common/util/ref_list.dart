@@ -1,4 +1,4 @@
-part of dsa.broker.utils;
+part of dsa.common;
 
 typedef RemoveRefCallback<OwnerType, ValueType>(
     RefListRef<OwnerType, ValueType> ref);
@@ -105,6 +105,34 @@ class RefListBase<OwnerType, ValueType> {
       callback.call(current);
     }
     _iter = null;
+  }
+
+  /// [callback] returns true when target node is found
+  /// [findNode] return the node that's found, or null if not found
+  RefListRef<OwnerType, ValueType> findNode(bool callback(RefListRef<OwnerType, ValueType> ref)) {
+    if (_iter != null) throw 'Concurrent LinkedSetBase Iteration';
+
+    if (_head._next == _head) {
+      return null;
+    }
+    _iter = _head._next;
+    _iterEnd = _head._prev;
+
+    while (_iter != null) {
+      var current = this._iter;
+      if (_iter == _iterEnd) {
+        _iter = null;
+        _iterEnd = null;
+      } else {
+        _iter = _iter._next;
+      }
+      if (callback.call(current)) {
+        _iter = null;
+        return current;
+      }
+    }
+    _iter = null;
+    return null;
   }
 
   // fast way to remove ref, because its prev and next no longer need to be maintained

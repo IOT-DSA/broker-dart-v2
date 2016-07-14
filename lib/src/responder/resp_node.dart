@@ -4,11 +4,11 @@ part of dsa.responder;
 class RespNode {
   final RespProvider provider;
   final String _path;
-  IRespImpl _impl;
+  IRespNodeImpl _impl;
 
   RespNode(this.provider, this._path);
 
-  void attachImpl(IRespImpl impl) {
+  void attachImpl(IRespNodeImpl impl) {
     if (_impl != null) {
       detachImpl();
     }
@@ -21,36 +21,35 @@ class RespNode {
     _impl = null;
   }
 
-  SubscribeHandler subscribe(int qos, IRemoteRequester link) {
+  void subscribe(SubscribeHandler handler, IRemoteRequester link) {
     // TODO
   }
 
-  InvokeHandler invoke(Map params, IRemoteRequester link) {
+  void invoke(InvokeHandler handler, IRemoteRequester link) {
     // TODO
   }
 
-  ListHandler list(IRemoteRequester link) {
+  void list(ListHandler handler, IRemoteRequester link) {
     // TODO
   }
 
-  SetValueHandler setValue(Object value, IRemoteRequester link) {
+  void setValue(SetValueHandler handler, IRemoteRequester link) {
     // TODO
   }
 
-  SetConfigHandler setConfig(String key, Object value, IRemoteRequester link) {
+  void setConfig(SetConfigHandler handler, IRemoteRequester link) {
     // TODO
   }
 
-  SetAttributeHandler setAttribute(String key, Object value,
-      IRemoteRequester link) {
+  void setAttribute(SetAttributeHandler handler, IRemoteRequester link) {
     // TODO
   }
 
-  RemoveConfigHandler removeConfig(String key, IRemoteRequester link) {
+  void removeConfig(RemoveConfigHandler handler, IRemoteRequester link) {
     // TODO
   }
 
-  RemoveAttributeHandler removeAttribute(String key, IRemoteRequester link) {
+  void removeAttribute(RemoveAttributeHandler handler, IRemoteRequester link) {
     // TODO
   }
 }
