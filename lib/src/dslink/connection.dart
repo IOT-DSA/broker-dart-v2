@@ -22,21 +22,22 @@ class Connection implements IDestroyable {
       int ts = (new DateTime.now()).millisecondsSinceEpoch;
       AckIdHolder ackHolder = _ackMap[ackId];
 
-      _acks.findRef((ref) {
+      _acks.firstWhere((ref) {
         ref.remove();
         if (ref.value == ackHolder) {
           return true;
         }
         ref.value.ack(ts);
+        return false;
       });
     }
   }
 
 
-  void disconnected() {
+  void onDisconnect() {
     Map<int, Handler> activeHandlers = {};
     _handlers.forEach((rid, handler) {
-      if (handler.disconnected()) {
+      if (handler.onDisconnect()) {
         activeHandlers[rid] = handler;
       }
     });

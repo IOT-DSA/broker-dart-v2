@@ -65,7 +65,7 @@ class RefListBase<OwnerType, ValueType> {
   }
 
   void forEach(callback(ValueType ValueType)) {
-    if (_iter != null) throw 'Concurrent LinkedSetBase Iteration';
+    if (_iter != null) throw 'Concurrent RefLink Iteration';
 
     if (_head._next == _head) {
       return;
@@ -86,7 +86,7 @@ class RefListBase<OwnerType, ValueType> {
   }
 
   void forEachRef(callback(RefListRef<OwnerType, ValueType> ref)) {
-    if (_iter != null) throw 'Concurrent LinkedSetBase Iteration';
+    if (_iter != null) throw 'Concurrent RefLink Iteration';
 
     if (_head._next == _head) {
       return;
@@ -108,10 +108,10 @@ class RefListBase<OwnerType, ValueType> {
   }
 
   /// [callback] returns true when target node is found
-  /// [findRef] return the node that's found, or null if not found
-  RefListRef<OwnerType, ValueType> findRef(
-      bool callback(RefListRef<OwnerType, ValueType> ref)) {
-    if (_iter != null) throw 'Concurrent LinkedSetBase Iteration';
+  /// [firstWhere] return the node that's found, or null if not found
+  RefListRef<OwnerType, ValueType> firstWhere(
+      bool predicate(RefListRef<OwnerType, ValueType> ref)) {
+    if (_iter != null) throw 'Concurrent RefLink Iteration';
 
     if (_head._next == _head) {
       return null;
@@ -127,7 +127,7 @@ class RefListBase<OwnerType, ValueType> {
       } else {
         _iter = _iter._next;
       }
-      if (callback.call(current)) {
+      if (predicate.call(current)) {
         _iter = null;
         return current;
       }
@@ -143,7 +143,7 @@ class RefListBase<OwnerType, ValueType> {
 
   void clear() {
     if (_iter != null)
-      throw 'clear() Ignored during LinkedSetBase Iteration';
+      throw 'clear() Ignored during RefLink Iteration';
 
     forEachRef(_clearNode);
     _head._prev = _head;

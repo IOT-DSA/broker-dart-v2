@@ -8,7 +8,7 @@ abstract class Handler implements IDestroyable {
   }
 
   /// return true if the handler is still needed after disconnect
-  bool disconnected() {
+  bool onDisconnect() {
 
   }
 
