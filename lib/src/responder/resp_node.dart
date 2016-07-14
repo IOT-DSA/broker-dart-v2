@@ -6,7 +6,13 @@ class RespNode {
   final String _path;
   IRespNodeImpl _impl;
 
-  RespNode(this.provider, this._path);
+  RefList<RespNode, SubscribeHandler> subscribeHandlers;
+  RefList<RespNode, ListHandler> listHandlers;
+
+  RespNode(this.provider, this._path) {
+    subscribeHandlers = new RefList<RespNode, SubscribeHandler>(this);
+    listHandlers = new RefList<RespNode, ListHandler>(this);
+  }
 
   void attachImpl(IRespNodeImpl impl) {
     if (_impl != null) {

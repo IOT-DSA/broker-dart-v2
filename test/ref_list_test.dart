@@ -14,13 +14,13 @@ void main() {
       expected++;
     });
     expected = 0;
-    list.forEachNode((node) {
+    list.forEachRef((node) {
       expect(node.value, expected, reason: "forEachNode");
       expected++;
     });
 
     expected = 0;
-    list.forEachNode((node) {
+    list.forEachRef((node) {
       expect(node.value, expected, reason: "forEachNode Remove");
       node.remove();
       expected++;

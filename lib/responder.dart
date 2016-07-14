@@ -5,7 +5,7 @@ import 'dart:typed_data';
 
 part "src/responder/resp_node.dart";
 part "src/responder/resp_node_impl.dart";
-part "src/responder/resp_node_provoder.dart";
+part "src/responder/resp_node_provider.dart";
 part "src/responder/resp_impl_provider.dart";
 
 part "src/responder/handler/handler.dart";
