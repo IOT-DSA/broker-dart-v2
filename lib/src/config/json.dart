@@ -126,9 +126,7 @@ class JsonFileConfigurationProvider extends BaseConfigurationProvider {
       if (m[part] == null) {
         m[part] = {};
       } else if (m[part] is! Map) {
-        m[part] = {
-          "_": m[part]
-        };
+        m[part] = {"_": m[part]};
       }
 
       m = m[part];

@@ -1,4 +1,3 @@
 part of dsa.broker;
 
-class SetValueInitiator extends Initiator {
-}
+class SetValueInitiator extends Initiator {}

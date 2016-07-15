@@ -15,8 +15,7 @@ class DefaultRouteProvider extends RouteProvider {
   }
 
   @override
-  Future init() async {
-  }
+  Future init() async {}
 
   @override
   handle(Link sourceLink, List<DSPacket> packets) async {
@@ -46,8 +45,8 @@ class DefaultRouteProvider extends RouteProvider {
         ack.ackId = packet.ackId;
 
         pub(sourceLink, ack);
-      } else if (packet is DSAckPacket) {
-      } else if (packet is DSRequestPacket && sourceLink.isRequester) {
+      } else if (packet is DSAckPacket) {} else if (packet is DSRequestPacket &&
+          sourceLink.isRequester) {
         var path = packet.path;
         var route = describe(path);
         var link = await _broker.control.getLinkByPath(route.owner);
@@ -57,9 +56,7 @@ class DefaultRouteProvider extends RouteProvider {
           resp.rid = packet.rid;
           resp.method = DSPacketMethod.close;
           resp.mode = DSPacketResponseMode.closed;
-          resp.setPayload({
-            "type": "disconnected"
-          });
+          resp.setPayload({"type": "disconnected"});
           pub(sourceLink, resp);
         } else {
           packet.path = path;
@@ -67,16 +64,13 @@ class DefaultRouteProvider extends RouteProvider {
         }
       } else if (packet is DSResponsePacket && sourceLink.isResponder) {
         var link = await _broker.control.getLinkByDsId(
-          sourceLink.translator.translateResponseRoute(packet.rid)
-        );
+            sourceLink.translator.translateResponseRoute(packet.rid));
 
         if (link == null) {
           var req = new DSRequestPacket();
           req.rid = packet.rid;
           req.method = DSPacketMethod.close;
-          req.setPayload({
-            "type": "disconnected"
-          });
+          req.setPayload({"type": "disconnected"});
           pub(sourceLink, req);
         } else {
           pub(link, packet);
@@ -85,7 +79,7 @@ class DefaultRouteProvider extends RouteProvider {
     }
 
     if (_broker.logger.isLoggable(Level.FINEST)) {
-      _broker.logger.finest("Deliver: ${deliverQueue}");
+      _broker.logger.finest("Deliver: $deliverQueue");
     }
 
     for (Link link in deliverQueue.keys) {
@@ -109,6 +103,5 @@ class DefaultRouteProvider extends RouteProvider {
   }
 
   @override
-  Future stop() async {
-  }
+  Future stop() async {}
 }

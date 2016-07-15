@@ -20,18 +20,17 @@ class HandshakeResponse {
 
   final Link link;
 
-  HandshakeResponse({
-    this.dsId,
-    this.publicKey,
-    this.wsUri,
-    this.tempKey,
-    this.salt,
-    this.saltL,
-    this.saltS,
-    this.path,
-    this.version,
-    this.link
-  });
+  HandshakeResponse(
+      {this.dsId,
+      this.publicKey,
+      this.wsUri,
+      this.tempKey,
+      this.salt,
+      this.saltL,
+      this.saltS,
+      this.path,
+      this.version,
+      this.link});
 
   Map<String, dynamic> encode([Map<String, dynamic> addons]) {
     var out = <String, dynamic>{

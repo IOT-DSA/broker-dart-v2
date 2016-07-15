@@ -30,14 +30,14 @@ class JsonDirectoryStorageProvider extends StorageProvider {
   @override
   Future store(String key, value) async {
     var encoded = Uri.encodeComponent(key);
-    var file = new File(pathlib.join(directory.path, "${encoded}.json"));
+    var file = new File(pathlib.join(directory.path, "$encoded.json"));
     await file.writeAsString(const JsonEncoder().convert(value));
   }
 
   @override
   Future delete(String key) async {
     var encoded = Uri.encodeComponent(key);
-    var file = new File(pathlib.join(directory.path, "${encoded}.json"));
+    var file = new File(pathlib.join(directory.path, "$encoded.json"));
 
     if (await file.exists()) {
       await file.delete();
@@ -45,6 +45,5 @@ class JsonDirectoryStorageProvider extends StorageProvider {
   }
 
   @override
-  Future stop() async {
-  }
+  Future stop() async {}
 }

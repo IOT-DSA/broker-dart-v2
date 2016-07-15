@@ -22,7 +22,7 @@ class RefListBase<OwnerType, ValueType> {
 
   RefListRef<OwnerType, ValueType> add(ValueType val) {
     RefListRef<OwnerType, ValueType> ref =
-    new RefListRef<OwnerType, ValueType>(this, val);
+        new RefListRef<OwnerType, ValueType>(this, val);
     _add(ref);
     return ref;
   }
@@ -142,8 +142,7 @@ class RefListBase<OwnerType, ValueType> {
   }
 
   void clear() {
-    if (_iter != null)
-      throw 'clear() Ignored during RefLink Iteration';
+    if (_iter != null) throw 'clear() Ignored during RefLink Iteration';
 
     forEachRef(_clearNode);
     _head._prev = _head;

@@ -41,8 +41,7 @@ void main() {
     var expectedValues = [0, 1, 2, 4, 5, 6, 8];
     var expectedIdx = 0;
     list.forEach((val) {
-      expect(
-          val, expectedValues[expectedIdx],
+      expect(val, expectedValues[expectedIdx],
           reason: "forEachNode random Remove Add");
       nodes[removeOrder[expectedIdx]].remove();
       list.add(expectedIdx + 10);
@@ -52,8 +51,7 @@ void main() {
     expectedIdx = 0;
     expectedValues = [5, 6, 8, 10, 11, 12, 13, 14, 15, 16];
     list.forEach((val) {
-      expect(
-          val, expectedValues[expectedIdx],
+      expect(val, expectedValues[expectedIdx],
           reason: "forEachNode random Remove Add");
       expectedIdx++;
     });
@@ -71,8 +69,7 @@ void main() {
     var expectedValues = [0, 1, 2, 4, 5, 6, 8];
     var expectedIdx = 0;
     list.forEach((val) {
-      expect(
-          val, expectedValues[expectedIdx],
+      expect(val, expectedValues[expectedIdx],
           reason: "forEachNode random Remove Add");
       nodes[removeOrder[expectedIdx]].remove();
       list.add(expectedIdx + 10);
@@ -82,8 +79,7 @@ void main() {
     expectedIdx = 0;
     expectedValues = [1, 5, 6, 10, 11, 12, 13, 14, 15, 16];
     list.forEach((val) {
-      expect(
-          val, expectedValues[expectedIdx],
+      expect(val, expectedValues[expectedIdx],
           reason: "forEachNode random Remove Add");
       expectedIdx++;
     });

@@ -36,8 +36,7 @@ class DefaultControlProvider extends ControlProvider {
   Future authorize(Link link, String auth) async {
     if (!link.verifySalt(0, auth)) {
       throw new BrokerClientException(
-        "Failed to authorize link: Invalid auth."
-      );
+          "Failed to authorize link: Invalid auth.");
     }
   }
 
@@ -89,11 +88,9 @@ class DefaultControlProvider extends ControlProvider {
       }
     }
 
-    Link link = previousLink != null ? previousLink : new Link(
-      _broker,
-      dsId: request.dsId,
-      path: connPath
-    );
+    Link link = previousLink != null
+        ? previousLink
+        : new Link(_broker, dsId: request.dsId, path: connPath);
 
     link.isRequester = request.isRequester;
     link.isResponder = request.isRequester;
@@ -107,18 +104,17 @@ class DefaultControlProvider extends ControlProvider {
     var brokerDsId = brokerKey.publicKey.getDsId("broker-dsa");
     var brokerPublicKey = brokerKey.publicKey.qBase64;
     var response = new HandshakeResponse(
-      dsId: brokerDsId,
-      publicKey: brokerPublicKey,
-      wsUri: "/ws",
-      version: dsaVersion,
-      tempKey: link.tempNonce.encodedPublicKey,
-      salt: link.salts[0],
-      saltL: link.salts[1],
-      saltS: link.salts[2],
-      path: link.path
-    );
+        dsId: brokerDsId,
+        publicKey: brokerPublicKey,
+        wsUri: "/ws",
+        version: dsaVersion,
+        tempKey: link.tempNonce.encodedPublicKey,
+        salt: link.salts[0],
+        saltL: link.salts[1],
+        saltS: link.salts[2],
+        path: link.path);
 
-    _broker.logger.info("DSLink shaken for ${connPath}");
+    _broker.logger.info("DSLink shaken for $connPath");
 
     _broker.taskLoop.schedule("save.conns");
 
@@ -164,11 +160,7 @@ class DefaultControlProvider extends ControlProvider {
           String id = map["dsId"];
           String path = map["path"];
 
-          _linksById[map["dsId"]] = new Link(
-            _broker,
-            dsId: id,
-            path: path
-          );
+          _linksById[map["dsId"]] = new Link(_broker, dsId: id, path: path);
         }
       }
     }

@@ -17,4 +17,3 @@ part "src/responder/handler/set_attribute_handler.dart";
 part "src/responder/handler/set_config_handler.dart";
 part "src/responder/handler/remove_attribute_handler.dart";
 part "src/responder/handler/remove_config_handler.dart";
-
