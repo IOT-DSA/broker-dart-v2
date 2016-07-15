@@ -1,5 +1,3 @@
 part of dsa.broker;
 
-class InvokeInitiator extends Initiator{
-
-}
+class InvokeInitiator extends Initiator {}

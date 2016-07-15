@@ -20,10 +20,9 @@ class ConfigurationProvision {
     if (!_checkValue(entry.type, value)) {
       var typeName = entry.type.toString().split('.')[1];
       throw new ConfigurationException(
-        "Bad configuration entry type. Should be of type ${typeName}.",
-        key: key,
-        value: value
-      );
+          "Bad configuration entry type. Should be of type $typeName.",
+          key: key,
+          value: value);
     }
 
     _checkNumericBounds(entry, value);
@@ -52,20 +51,18 @@ class ConfigurationProvision {
     if (value is num && entry.max is num) {
       if (value > entry.max) {
         throw new ConfigurationException(
-          "Invalid value, maximum value is ${entry.max}.",
-          key: entry.key,
-          value: value
-        );
+            "Invalid value, maximum value is ${entry.max}.",
+            key: entry.key,
+            value: value);
       }
     }
 
     if (value is num && entry.min is num) {
       if (value < entry.min) {
         throw new ConfigurationException(
-          "Invalid value, minimum value is ${entry.min}.",
-          key: entry.key,
-          value: value
-        );
+            "Invalid value, minimum value is ${entry.min}.",
+            key: entry.key,
+            value: value);
       }
     }
   }
@@ -77,10 +74,9 @@ class ConfigurationProvision {
       } else {
         if (!entry.allowedValues.contains(value)) {
           throw new ConfigurationException(
-            "Invalid value, provided value is not allowed.",
-            key: entry.key,
-            value: value
-          );
+              "Invalid value, provided value is not allowed.",
+              key: entry.key,
+              value: value);
         }
       }
     }
@@ -88,10 +84,8 @@ class ConfigurationProvision {
 
   ConfigurationEntryProvision getEntry(String key) {
     return entries.firstWhere((entry) => entry.key == key, orElse: () {
-      throw new ConfigurationException(
-        "No configuration entry found.",
-        key: key
-      );
+      throw new ConfigurationException("No configuration entry found.",
+          key: key);
     });
   }
 
@@ -110,16 +104,15 @@ class ConfigurationEntryProvision {
   final String key;
   final ConfigurationEntryType type;
   final bool isOptional;
-  final defaultValue;
+  final dynamic defaultValue;
   final dynamic max;
   final dynamic min;
   final List<dynamic> allowedValues;
 
-  ConfigurationEntryProvision(this.key, this.type, {
-    this.defaultValue,
-    this.isOptional: false,
-    this.max,
-    this.min,
-    this.allowedValues
-  });
+  ConfigurationEntryProvision(this.key, this.type,
+      {this.defaultValue,
+      this.isOptional: false,
+      this.max,
+      this.min,
+      this.allowedValues});
 }

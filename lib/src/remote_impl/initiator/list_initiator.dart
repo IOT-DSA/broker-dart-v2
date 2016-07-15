@@ -1,4 +1,3 @@
 part of dsa.broker;
 
-class ListInitiator extends Initiator {
-}
+class ListInitiator extends Initiator {}

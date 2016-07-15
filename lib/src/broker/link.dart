@@ -39,12 +39,8 @@ class Link {
     kick();
   }
 
-  Link(this.broker, {
-    this.dsId,
-    this.path,
-    this.isRequester: false,
-    this.isResponder: true
-  }) {
+  Link(this.broker,
+      {this.dsId, this.path, this.isRequester: false, this.isResponder: true}) {
     for (int i = 0; i < 3; ++i) {
       List<int> bytes = new List<int>(12);
       for (int j = 0; j < 12; ++j) {
@@ -92,5 +88,5 @@ class Link {
   }
 
   @override
-  String toString() => "Link(${dsId})";
+  String toString() => "Link($dsId)";
 }

@@ -7,7 +7,8 @@ class BrokerHttpServer {
 
   BrokerHttpServer(this.broker);
 
-  Future<HttpServer> startHttpServer({int port: 8080, host: "0.0.0.0"}) async {
+  Future<HttpServer> startHttpServer(
+      {int port: 8080, dynamic host: "0.0.0.0"}) async {
     var server = await HttpServer.bind(host, port);
     await useHttpServer(server);
     return server;
@@ -44,10 +45,7 @@ class BrokerHttpServer {
         await HttpUtils.sendBadRequest(request, e.toString());
       } else {
         broker.logger.warning(
-          "HTTP Request to ${request.uri} encountered an error.",
-          e,
-          stack
-        );
+            "HTTP Request to ${request.uri} encountered an error.", e, stack);
         await HttpUtils.sendServerError(request, e.toString());
       }
     }
@@ -64,22 +62,13 @@ class BrokerHttpServer {
       return await HttpUtils.sendBadRequest(request, _getDsIdErrorMsg(dsId));
     }
 
-    var json = await HttpUtils.readJsonRequest(request);
-    var handshakeRequest = new HandshakeRequest.decode(
-      json,
-      dsId: dsId,
-      token: token,
-      session: session
-    );
+    var json = await HttpUtils.readJsonRequest(request) as Map<String, dynamic>;
+    var handshakeRequest = new HandshakeRequest.decode(json,
+        dsId: dsId, token: token, session: session);
 
-    var shaken = await broker.control.shake(
-      handshakeRequest
-    );
+    var shaken = await broker.control.shake(handshakeRequest);
 
-    await HttpUtils.writeJsonResponse(
-      request,
-      shaken.response.encode()
-    );
+    await HttpUtils.writeJsonResponse(request, shaken.response.encode());
   }
 
   Future handleWebSocketRequest(HttpRequest request) async {

@@ -16,7 +16,6 @@ import "package:logging/logging.dart";
 import 'common.dart';
 import 'responder.dart';
 
-
 part "src/control/provider.dart";
 part "src/control/default.dart";
 

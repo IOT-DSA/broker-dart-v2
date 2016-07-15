@@ -1,7 +1,6 @@
 part of dsa.responder;
 
 class RespProvider {
-
   IRespImplProvider _implProvider;
 
   Map<String, RespNode> _nodes = {};

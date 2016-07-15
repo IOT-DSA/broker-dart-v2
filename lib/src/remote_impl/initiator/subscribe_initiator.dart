@@ -1,4 +1,3 @@
 part of dsa.broker;
 
-class SubscribeInitiator extends Initiator{
-}
+class SubscribeInitiator extends Initiator {}

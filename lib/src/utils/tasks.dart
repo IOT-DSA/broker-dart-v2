@@ -12,7 +12,7 @@ class TaskRunLoop {
 
   void register(String name, TaskRunner runner) {
     if (_runners.containsKey(name)) {
-      throw new Exception("Task '${name}' already defined.");
+      throw new Exception("Task '$name' already defined.");
     }
 
     _runners[name] = runner;

@@ -10,18 +10,11 @@ class Broker {
 
   BrokerHttpServer httpServer;
 
-  Broker(
-    this.control,
-    this.config,
-    this.storage,
-    this.route,
-    this.logger,
-    this.taskLoop);
+  Broker(this.control, this.config, this.storage, this.route, this.logger,
+      this.taskLoop);
 
-  Future<BrokerHttpServer> setupHttpServer({
-    int port: 8080,
-    host: "0.0.0.0"
-  }) async {
+  Future<BrokerHttpServer> setupHttpServer(
+      {int port: 8080, dynamic host: "0.0.0.0"}) async {
     httpServer = new BrokerHttpServer(this);
     await httpServer.startHttpServer(host: host, port: port);
     return httpServer;

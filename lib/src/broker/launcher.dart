@@ -6,8 +6,14 @@ abstract class BrokerLauncherExtension {
   Future modifyConfigurationProvision(ConfigurationProvision provision);
 }
 
-typedef Future<ConfigurationProvider> BrokerLauncherConfigProvider(ArgResults results);
-typedef Future<ControlProvider> BrokerLauncherBasicProvider(ConfigurationProvider config);
+typedef Future<ConfigurationProvider> BrokerLauncherConfigProvider(
+    ArgResults results);
+typedef Future<ControlProvider> BrokerLauncherBasicProvider(
+    ConfigurationProvider config);
+typedef Future<StorageProvider> BrokerLauncherStorageProvider(
+    ConfigurationProvider config);
+typedef Future<RouteProvider> BrokerLauncherRouteProvider(
+    ConfigurationProvider config);
 
 class BrokerLauncher {
   final List<String> args;
@@ -21,17 +27,18 @@ class BrokerLauncher {
   };
 
   final Map<String, BrokerLauncherBasicProvider> controlProviders = {
-    "default": (ConfigurationProvider config) async => new DefaultControlProvider()
+    "default": (ConfigurationProvider config) async =>
+        new DefaultControlProvider()
   };
 
-  final Map<String, BrokerLauncherBasicProvider> storageProviders = {
+  final Map<String, BrokerLauncherStorageProvider> storageProviders = {
     "json-directory": (ConfigurationProvider config) async {
       var path = await config.getString("storage.json-directory.path");
       return new JsonDirectoryStorageProvider.forPath(path);
     }
   };
 
-  final Map<String, BrokerLauncherBasicProvider> routeProviders = {
+  final Map<String, BrokerLauncherRouteProvider> routeProviders = {
     "default": (ConfigurationProvider config) async {
       return new DefaultRouteProvider();
     }
@@ -49,15 +56,11 @@ class BrokerLauncher {
     }
 
     var argp = new ArgParser(allowTrailingOptions: true);
-    argp.addOption("config-provider", help: "Configuration Provider", allowed: [
-      "json"
-    ], defaultsTo: "json");
+    argp.addOption("config-provider",
+        help: "Configuration Provider", allowed: ["json"], defaultsTo: "json");
 
-    argp.addOption(
-      "config-json-file",
-      help: "JSON Configuration File",
-      defaultsTo: "broker.json"
-    );
+    argp.addOption("config-json-file",
+        help: "JSON Configuration File", defaultsTo: "broker.json");
 
     for (BrokerLauncherExtension extension in extensions) {
       await extension.modifyArgumentParser(argp);
@@ -81,20 +84,12 @@ class BrokerLauncher {
     var logger = await createLogger(config);
     var taskLoop = await createTaskLoop(config);
 
-    var broker = new Broker(
-      control,
-      config,
-      storage,
-      route,
-      logger,
-      taskLoop
-    );
+    var broker = new Broker(control, config, storage, route, logger, taskLoop);
 
     await broker.init();
     await broker.setupHttpServer(
-      host: await config.getString("http.host"),
-      port: await config.getInteger("http.port")
-    );
+        host: await config.getString("http.host"),
+        port: await config.getInteger("http.port"));
     return broker;
   }
 
@@ -105,7 +100,8 @@ class BrokerLauncher {
     return new TaskRunLoop(interval);
   }
 
-  Future<ControlProvider> createControlProvider(ConfigurationProvider config) async {
+  Future<ControlProvider> createControlProvider(
+      ConfigurationProvider config) async {
     var type = await config.getString("control.provider");
 
     ControlProvider provider;
@@ -114,15 +110,14 @@ class BrokerLauncher {
       var builder = controlProviders[type];
       provider = await builder(config);
     } else {
-      throw new ConfigurationException(
-        "Invalid control provider: ${type}"
-      );
+      throw new ConfigurationException("Invalid control provider: $type");
     }
 
     return provider;
   }
 
-  Future<StorageProvider> createStorageProvider(ConfigurationProvider config) async {
+  Future<StorageProvider> createStorageProvider(
+      ConfigurationProvider config) async {
     var type = await config.getString("storage.provider");
 
     StorageProvider provider;
@@ -131,9 +126,7 @@ class BrokerLauncher {
       var builder = storageProviders[type];
       provider = await builder(config);
     } else {
-      throw new ConfigurationException(
-        "Invalid storage provider: ${type}"
-      );
+      throw new ConfigurationException("Invalid storage provider: $type");
     }
 
     return provider;
@@ -145,9 +138,9 @@ class BrokerLauncher {
 
     hierarchicalLoggingEnabled = true;
     var logger = new Logger("DSA");
-    logger.level = Level.LEVELS.firstWhere(
-      (l) => l.name.toLowerCase() == level, orElse: () {
-        return Level.INFO;
+    logger.level = Level.LEVELS.firstWhere((l) => l.name.toLowerCase() == level,
+        orElse: () {
+      return Level.INFO;
     });
 
     logger.onRecord.listen((LogRecord record) {
@@ -164,7 +157,8 @@ class BrokerLauncher {
     return logger;
   }
 
-  Future<RouteProvider> createRouteProvider(ConfigurationProvider config) async {
+  Future<RouteProvider> createRouteProvider(
+      ConfigurationProvider config) async {
     var type = await config.getString("route.provider");
 
     RouteProvider provider;
@@ -173,15 +167,14 @@ class BrokerLauncher {
       var builder = routeProviders[type];
       provider = await builder(config);
     } else {
-      throw new ConfigurationException(
-        "Invalid route provider: ${type}"
-      );
+      throw new ConfigurationException("Invalid route provider: $type");
     }
 
     return provider;
   }
 
-  Future<ConfigurationProvider> createConfigurationProvider(ArgResults results) async {
+  Future<ConfigurationProvider> createConfigurationProvider(
+      ArgResults results) async {
     var type = results["config-provider"];
 
     ConfigurationProvider provider;
@@ -190,9 +183,7 @@ class BrokerLauncher {
       var builder = configurationProviders[type];
       provider = await builder(results);
     } else {
-      throw new ConfigurationException(
-        "Invalid configuration provider: ${type}"
-      );
+      throw new ConfigurationException("Invalid configuration provider: $type");
     }
 
     return provider;

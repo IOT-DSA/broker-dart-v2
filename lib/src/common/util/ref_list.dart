@@ -1,6 +1,6 @@
 part of dsa.common;
 
-typedef RemoveRefCallback<OwnerType, ValueType>(
+typedef void RemoveRefCallback<OwnerType, ValueType>(
     RefListRef<OwnerType, ValueType> ref);
 
 /// a set type implemented as linked list
@@ -8,7 +8,7 @@ class RefListBase<OwnerType, ValueType> {
   OwnerType _owner;
 
   OwnerType get owner => _owner;
-  RemoveRefCallback _removeCallback;
+  RemoveRefCallback<OwnerType, ValueType> _removeCallback;
 
   RefListRef<OwnerType, ValueType> _head;
 
@@ -22,7 +22,7 @@ class RefListBase<OwnerType, ValueType> {
 
   RefListRef<OwnerType, ValueType> add(ValueType val) {
     RefListRef<OwnerType, ValueType> ref =
-    new RefListRef<OwnerType, ValueType>(this, val);
+        new RefListRef<OwnerType, ValueType>(this, val);
     _add(ref);
     return ref;
   }
@@ -64,7 +64,7 @@ class RefListBase<OwnerType, ValueType> {
     }
   }
 
-  void forEach(callback(ValueType ValueType)) {
+  void forEach(callback(ValueType valueType)) {
     if (_iter != null) throw 'Concurrent RefLink Iteration';
 
     if (_head._next == _head) {
@@ -142,8 +142,7 @@ class RefListBase<OwnerType, ValueType> {
   }
 
   void clear() {
-    if (_iter != null)
-      throw 'clear() Ignored during RefLink Iteration';
+    if (_iter != null) throw 'clear() Ignored during RefLink Iteration';
 
     forEachRef(_clearNode);
     _head._prev = _head;
@@ -181,7 +180,8 @@ class RefListRef<OwnerType, ValueType> {
 class RefList<OwnerType, ValueType> extends Object
     with RefListBase<OwnerType, ValueType> {
   RefList(OwnerType owner,
-      [removeCallback(RefListRef<OwnerType, ValueType> ref) = null]) {
+      [RemoveRefCallback removeCallback(RefListRef<OwnerType, ValueType> ref) =
+          null]) {
     _owner = owner;
     _removeCallback = removeCallback;
 
@@ -195,7 +195,7 @@ class RefList<OwnerType, ValueType> extends Object
 class ManagedRefList<OwnerType, ValueType extends IDestroyable> extends Object
     with RefListBase<OwnerType, ValueType> {
   ManagedRefList(OwnerType owner,
-      [removeCallback(RefListRef<OwnerType, ValueType> ref) = null]) {
+      [RemoveRefCallback removeCallback(RefListRef<OwnerType, ValueType> ref) = null]) {
     _owner = owner;
     _removeCallback = removeCallback;
 

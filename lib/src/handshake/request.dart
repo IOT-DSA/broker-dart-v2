@@ -11,28 +11,24 @@ class HandshakeRequest {
   final Map<String, dynamic> json;
   final String session;
 
-  HandshakeRequest({
-    this.version,
-    this.isRequester,
-    this.isResponder,
-    this.linkData,
-    this.dsId,
-    this.token,
-    this.publicKey,
-    this.json,
-    this.session
-  });
+  HandshakeRequest(
+      {this.version,
+      this.isRequester,
+      this.isResponder,
+      this.linkData,
+      this.dsId,
+      this.token,
+      this.publicKey,
+      this.json,
+      this.session});
 
-  factory HandshakeRequest.decode(Map<String, dynamic> input, {
-    String token,
-    String dsId,
-    String session
-  }) {
+  factory HandshakeRequest.decode(Map<String, dynamic> input,
+      {String token, String dsId, String session}) {
     String version = input["version"];
     bool isRequester = input["isRequester"] == true;
     bool isResponder = input["isResponder"] == true;
 
-    Map<String, dynamic> linkData = input["linkData"];
+    Map<String, dynamic> linkData = input["linkData"] as Map<String, dynamic>;
     if (linkData == null) {
       linkData = const <String, dynamic>{};
     }
@@ -41,14 +37,13 @@ class HandshakeRequest {
     String publicKey = input["publicKey"];
 
     return new HandshakeRequest(
-      version: version,
-      isRequester: isRequester,
-      isResponder: isResponder,
-      linkData: linkData,
-      dsId: dsId,
-      token: token,
-      publicKey: publicKey,
-      json: input
-    );
+        version: version,
+        isRequester: isRequester,
+        isResponder: isResponder,
+        linkData: linkData,
+        dsId: dsId,
+        token: token,
+        publicKey: publicKey,
+        json: input);
   }
 }

@@ -1,7 +1,6 @@
 part of dsa.broker;
 
 class Connection implements IDestroyable {
-
   RemoteImplProvider implProvider;
 
   /// rid as key
@@ -33,7 +32,6 @@ class Connection implements IDestroyable {
     }
   }
 
-
   void onDisconnect() {
     Map<int, Handler> activeHandlers = {};
     _handlers.forEach((rid, handler) {
@@ -58,5 +56,4 @@ class Connection implements IDestroyable {
     });
     implProvider.destroy();
   }
-
 }

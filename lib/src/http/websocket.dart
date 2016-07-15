@@ -54,6 +54,6 @@ class WebSocketProvider extends ConnectionProvider {
 
   @override
   Future get onDisconnect => socket.done.then((_) {
-    _pingTimer.cancel();
-  });
+        _pingTimer.cancel();
+      });
 }

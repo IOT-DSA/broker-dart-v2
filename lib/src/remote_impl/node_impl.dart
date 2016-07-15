@@ -1,5 +1,3 @@
 part of dsa.broker;
 
-class RemoteNodeImpl implements IRespNodeImpl {
-
-}
+class RemoteNodeImpl implements IRespNodeImpl {}

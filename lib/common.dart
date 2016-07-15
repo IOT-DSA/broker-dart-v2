@@ -1,4 +1,5 @@
 library dsa.common;
+
 import 'dart:typed_data';
 
 part "src/common/permission.dart";

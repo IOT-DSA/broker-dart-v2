@@ -31,52 +31,48 @@ abstract class BaseConfigurationProvider extends ConfigurationProvider {
   }
 
   @override
-  Future<bool> getBoolean(String key) async =>
-    await _getAndCheck(key);
+  Future<bool> getBoolean(String key) async => await _getAndCheck(key);
 
   @override
-  Future<double> getDouble(String key) async =>
-    await _getAndCheck(key);
+  Future<double> getDouble(String key) async => await _getAndCheck(key);
 
   @override
-  Future<int> getInteger(String key) async =>
-    await _getAndCheck(key);
+  Future<int> getInteger(String key) async => await _getAndCheck(key);
 
   @override
   Future<Map<String, dynamic>> getMap(String key) async =>
-    await _getAndCheck(key);
+      await _getAndCheck(key) as Map<String, dynamic>;
 
   @override
-  Future<String> getString(String key) async =>
-    await _getAndCheck(key);
+  Future<String> getString(String key) async => await _getAndCheck(key);
 
   @override
   Future<List<String>> getStringList(String key) async =>
-    await _getAndCheck(key);
+      await _getAndCheck(key) as List<String>;
 
   @override
   Future setBoolean(String key, bool value) async =>
-    await _setAndCheck(key, value);
+      await _setAndCheck(key, value);
 
   @override
   Future setDouble(String key, double value) async =>
-    await _setAndCheck(key, value);
+      await _setAndCheck(key, value);
 
   @override
   Future setInteger(String key, int value) async =>
-    await _setAndCheck(key, value);
+      await _setAndCheck(key, value);
 
   @override
   Future setMap(String key, Map<String, dynamic> value) async =>
-    await _setAndCheck(key, value);
+      await _setAndCheck(key, value);
 
   @override
   Future setString(String key, String value) async =>
-    await _setAndCheck(key, value);
+      await _setAndCheck(key, value);
 
   @override
   Future setStringList(String key, List<String> value) async =>
-    await _setAndCheck(key, value);
+      await _setAndCheck(key, value);
 
   Future<dynamic> _getAndCheck(String key) async {
     var entry = _cfg.getEntry(key);
@@ -91,9 +87,8 @@ abstract class BaseConfigurationProvider extends ConfigurationProvider {
     if (value == null) {
       if (!entry.isOptional) {
         throw new ConfigurationException(
-          "Missing required configuration entry.",
-          key: key
-        );
+            "Missing required configuration entry.",
+            key: key);
       }
     } else {
       _cfg.checkConfigEntry(key, value);
@@ -108,9 +103,8 @@ abstract class BaseConfigurationProvider extends ConfigurationProvider {
     if (value == null) {
       if (!entry.isOptional) {
         throw new ConfigurationException(
-          "Unable to set a required configuration entry to null.",
-          key: key
-        );
+            "Unable to set a required configuration entry to null.",
+            key: key);
       }
     } else {
       _cfg.checkConfigEntry(key, value);
