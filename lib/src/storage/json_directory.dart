@@ -20,7 +20,7 @@ class JsonDirectoryStorageProvider extends StorageProvider {
   @override
   Future<dynamic> retrieve(String key) async {
     var encoded = Uri.encodeComponent(key);
-    var file = new File(pathlib.join(directory.path, "${encoded}.json"));
+    var file = new File(pathlib.join(directory.path, "$encoded.json"));
     if (await file.exists()) {
       return const JsonDecoder().convert(await file.readAsString());
     }
@@ -28,7 +28,7 @@ class JsonDirectoryStorageProvider extends StorageProvider {
   }
 
   @override
-  Future store(String key, value) async {
+  Future store(String key, dynamic value) async {
     var encoded = Uri.encodeComponent(key);
     var file = new File(pathlib.join(directory.path, "$encoded.json"));
     await file.writeAsString(const JsonEncoder().convert(value));

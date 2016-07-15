@@ -106,7 +106,7 @@ class BrokerLauncher {
       var builder = controlProviders[type];
       provider = await builder(config);
     } else {
-      throw new ConfigurationException("Invalid control provider: ${type}");
+      throw new ConfigurationException("Invalid control provider: $type");
     }
 
     return provider;
@@ -122,7 +122,7 @@ class BrokerLauncher {
       var builder = storageProviders[type];
       provider = await builder(config);
     } else {
-      throw new ConfigurationException("Invalid storage provider: ${type}");
+      throw new ConfigurationException("Invalid storage provider: $type");
     }
 
     return provider;

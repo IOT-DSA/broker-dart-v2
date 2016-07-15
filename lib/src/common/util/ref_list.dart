@@ -1,6 +1,6 @@
 part of dsa.common;
 
-typedef RemoveRefCallback<OwnerType, ValueType>(
+typedef void RemoveRefCallback<OwnerType, ValueType>(
     RefListRef<OwnerType, ValueType> ref);
 
 /// a set type implemented as linked list
@@ -64,7 +64,7 @@ class RefListBase<OwnerType, ValueType> {
     }
   }
 
-  void forEach(callback(ValueType ValueType)) {
+  void forEach(callback(ValueType valueType)) {
     if (_iter != null) throw 'Concurrent RefLink Iteration';
 
     if (_head._next == _head) {

@@ -19,7 +19,7 @@ class JsonFileConfigurationProvider extends BaseConfigurationProvider {
 
     await _loop.start();
 
-    writeDefaults() async {
+    Future<Null> writeDefaults() async {
       _json = <String, dynamic>{};
 
       for (ConfigurationEntryProvision entry in provision.entries) {
@@ -40,10 +40,11 @@ class JsonFileConfigurationProvider extends BaseConfigurationProvider {
     }
 
     try {
-      var json = const JsonDecoder().convert(await file.readAsString());
+      var json = const JsonDecoder().convert(await file.readAsString())
+          as Map<String, dynamic>;
 
       if (json is! Map) {
-        throw "JSON is not a map.";
+        throw "JSON is invalid.";
       }
 
       _json = json;
@@ -75,7 +76,7 @@ class JsonFileConfigurationProvider extends BaseConfigurationProvider {
       }
 
       if (m is Map) {
-        m = m[part];
+        m = m[part] as Map<String, dynamic>;
       } else {
         m = null;
       }
@@ -99,7 +100,7 @@ class JsonFileConfigurationProvider extends BaseConfigurationProvider {
       }
 
       if (m is Map) {
-        m = m[part];
+        m = m[part] as Map<String, dynamic>;
       } else {
         m = null;
       }
@@ -129,7 +130,7 @@ class JsonFileConfigurationProvider extends BaseConfigurationProvider {
         m[part] = {"_": m[part]};
       }
 
-      m = m[part];
+      m = m[part] as Map<String, dynamic>;
     }
 
     m[keyName] = value;
@@ -144,7 +145,7 @@ class JsonFileConfigurationProvider extends BaseConfigurationProvider {
   }
 
   @override
-  Future set(String key, value) async {
+  Future set(String key, dynamic value) async {
     _putData(key, value);
     await _loop.schedule("save");
   }

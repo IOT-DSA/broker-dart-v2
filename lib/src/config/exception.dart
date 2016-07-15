@@ -9,16 +9,16 @@ class ConfigurationException {
 
   @override
   String toString() {
-    var out = "${message}";
+    var out = "$message";
 
     if (key != null || value != null) {
       out += " (";
       if (key != null) {
-        out += "Key: ${key}";
+        out += "Key: $key";
       }
 
       if (value != null) {
-        out += "${key == null ? '' : ', '}Value: ${value}";
+        out += "${key == null ? '' : ', '}Value: $value";
       }
 
       out += ")";
