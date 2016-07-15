@@ -10,6 +10,10 @@ typedef Future<ConfigurationProvider> BrokerLauncherConfigProvider(
     ArgResults results);
 typedef Future<ControlProvider> BrokerLauncherBasicProvider(
     ConfigurationProvider config);
+typedef Future<StorageProvider> BrokerLauncherStorageProvider(
+    ConfigurationProvider config);
+typedef Future<RouteProvider> BrokerLauncherRouteProvider(
+    ConfigurationProvider config);
 
 class BrokerLauncher {
   final List<String> args;
@@ -27,14 +31,14 @@ class BrokerLauncher {
         new DefaultControlProvider()
   };
 
-  final Map<String, BrokerLauncherBasicProvider> storageProviders = {
+  final Map<String, BrokerLauncherStorageProvider> storageProviders = {
     "json-directory": (ConfigurationProvider config) async {
       var path = await config.getString("storage.json-directory.path");
       return new JsonDirectoryStorageProvider.forPath(path);
     }
   };
 
-  final Map<String, BrokerLauncherBasicProvider> routeProviders = {
+  final Map<String, BrokerLauncherRouteProvider> routeProviders = {
     "default": (ConfigurationProvider config) async {
       return new DefaultRouteProvider();
     }
@@ -106,7 +110,7 @@ class BrokerLauncher {
       var builder = controlProviders[type];
       provider = await builder(config);
     } else {
-      throw new ConfigurationException("Invalid control provider: ${type}");
+      throw new ConfigurationException("Invalid control provider: $type");
     }
 
     return provider;
@@ -122,7 +126,7 @@ class BrokerLauncher {
       var builder = storageProviders[type];
       provider = await builder(config);
     } else {
-      throw new ConfigurationException("Invalid storage provider: ${type}");
+      throw new ConfigurationException("Invalid storage provider: $type");
     }
 
     return provider;

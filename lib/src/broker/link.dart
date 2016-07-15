@@ -88,5 +88,5 @@ class Link {
   }
 
   @override
-  String toString() => "Link(${dsId})";
+  String toString() => "Link($dsId)";
 }

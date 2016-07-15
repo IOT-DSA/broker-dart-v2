@@ -18,10 +18,11 @@ class DefaultRouteProvider extends RouteProvider {
   Future init() async {}
 
   @override
-  handle(Link sourceLink, List<DSPacket> packets) async {
+  // TODO: Precise What kind of Future this is
+  Future handle(Link sourceLink, List<DSPacket> packets) async {
     var deliverQueue = <Link, List<DSPacket>>{};
 
-    pub(Link link, DSPacket pkt) {
+    void pub(Link link, DSPacket pkt) {
       if (sourceLink != link) {
         if (pkt is DSRequestPacket) {
           pkt.rid = link.translator.translateRequest(pkt.rid, sourceLink.dsId);

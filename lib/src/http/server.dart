@@ -62,7 +62,7 @@ class BrokerHttpServer {
       return await HttpUtils.sendBadRequest(request, _getDsIdErrorMsg(dsId));
     }
 
-    var json = await HttpUtils.readJsonRequest(request);
+    var json = await HttpUtils.readJsonRequest(request) as Map<String, dynamic>;
     var handshakeRequest = new HandshakeRequest.decode(json,
         dsId: dsId, token: token, session: session);
 

@@ -14,7 +14,7 @@ class Broker {
       this.taskLoop);
 
   Future<BrokerHttpServer> setupHttpServer(
-      {int port: 8080, host: "0.0.0.0"}) async {
+      {int port: 8080, dynamic host: "0.0.0.0"}) async {
     httpServer = new BrokerHttpServer(this);
     await httpServer.startHttpServer(host: host, port: port);
     return httpServer;

@@ -104,7 +104,7 @@ class ConfigurationEntryProvision {
   final String key;
   final ConfigurationEntryType type;
   final bool isOptional;
-  final defaultValue;
+  final dynamic defaultValue;
   final dynamic max;
   final dynamic min;
   final List<dynamic> allowedValues;
