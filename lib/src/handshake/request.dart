@@ -28,7 +28,7 @@ class HandshakeRequest {
     bool isRequester = input["isRequester"] == true;
     bool isResponder = input["isResponder"] == true;
 
-    Map<String, dynamic> linkData = input["linkData"];
+    Map<String, dynamic> linkData = input["linkData"] as Map<String, dynamic>;
     if (linkData == null) {
       linkData = const <String, dynamic>{};
     }

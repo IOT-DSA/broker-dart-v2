@@ -41,14 +41,14 @@ abstract class BaseConfigurationProvider extends ConfigurationProvider {
 
   @override
   Future<Map<String, dynamic>> getMap(String key) async =>
-      await _getAndCheck(key);
+      await _getAndCheck(key) as Map<String, dynamic>;
 
   @override
   Future<String> getString(String key) async => await _getAndCheck(key);
 
   @override
   Future<List<String>> getStringList(String key) async =>
-      await _getAndCheck(key);
+      await _getAndCheck(key) as List<String>;
 
   @override
   Future setBoolean(String key, bool value) async =>
