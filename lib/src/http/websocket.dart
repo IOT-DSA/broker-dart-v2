@@ -15,7 +15,7 @@ class WebSocketProvider extends ConnectionProvider {
 
     socket.listen((data) {
       if (data is Uint8List && data.lengthInBytes != 0) {
-        _link.handlePackets(reader.read(data));
+        _link.handlePackets(reader.read(data as Uint8List));
       }
     });
 

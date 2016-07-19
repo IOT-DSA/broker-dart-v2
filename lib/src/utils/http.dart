@@ -12,7 +12,7 @@ class HttpUtils {
   static Future<List<int>> readBytesRequest(HttpRequest request) async {
     return await request.fold(<int>[], (List<int> a, List<int> b) {
       return a..addAll(b);
-    });
+    }) as Future<List<int>>;
   }
 
   static Future sendBadRequest(HttpRequest request, String message) async {
