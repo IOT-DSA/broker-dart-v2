@@ -16,6 +16,14 @@ class Connection implements IDestroyable {
     _acks = new RefList<Connection, IAck>(this);
   }
 
+  void requestFrameReceived(RequestFrame frame) {
+
+  }
+
+  void responseFrameReceived(ResponseFrame frame) {
+
+  }
+
   void ackReceived(int ackId) {
     if (_ackMap.containsKey(ackId)) {
       int ts = (new DateTime.now()).millisecondsSinceEpoch;
